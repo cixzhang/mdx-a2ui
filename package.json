@@ -16,7 +16,8 @@
   "scripts": {
     "test": "vitest run",
     "test:watch": "vitest",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "build:demo": "node scripts/build-demo.mjs"
   },
   "dependencies": {
     "remark-gfm": "^4.0.0",
@@ -26,6 +27,7 @@
   },
   "devDependencies": {
     "@types/mdast": "^4.0.4",
+    "esbuild": "^0.28.2",
     "typescript": "^5.7.2",
     "vitest": "^2.1.8"
   }

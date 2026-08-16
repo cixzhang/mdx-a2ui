@@ -69,6 +69,28 @@ truncated prefix is refused — correct, but it renders nothing while the answer
 is arriving. Without the converter's root-first emission, A2UI written by a
 model paints at 99% of arrival or never: models put `root` last, or misname it.
 
+## The demo
+
+[**cixzhang.github.io/mdx-a2ui**](https://cixzhang.github.io/mdx-a2ui/) —
+the same conversion, rendered with [Astryx](https://astryx.dev). Drag the
+slider to replay a document byte by byte, or paste an
+[OpenRouter](https://openrouter.ai/keys) key and have a model write a live one.
+
+The page is `demo/`: static files, no framework, everything third-party loaded
+from a CDN through an import map. The key lives in this browser's localStorage
+and is sent only to openrouter.ai — GitHub Pages is static, so there is no
+server that could receive it.
+
+`demo/render.js` is ~150 lines mapping A2UI onto Astryx components, and it is
+in the demo rather than in the library on purpose: the converter emits ordinary
+A2UI, which already has renderers for several design systems. Making one of
+them a dependency would trade the format's whole point for a shortcut.
+
+```
+npm install && npm run build:demo
+npx http-server demo -p 4599
+```
+
 ## Status
 
 Nothing here is stable. Every export carries an `experimental_` prefix, the
