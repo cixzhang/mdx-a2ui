@@ -23,6 +23,52 @@ instead of compiling keeps both. An attribute expression arrives from
 `remark-mdx` as *source text*, and this library only accepts it if it parses as
 a JSON literal — so there is no evaluator in the path to abuse.
 
+## Usage
+
+```ts
+import {
+  experimental_mdxToA2ui,
+  experimental_mdxStreamToA2ui,
+} from 'mdx-a2ui';
+
+// A settled document.
+const {errors, messages} = experimental_mdxToA2ui(source);
+
+// A document still arriving: heal the syntax, then convert.
+const {messages, settled} = experimental_mdxStreamToA2ui(prefix);
+```
+
+`messages` is an A2UI v0.9 pair — `createSurface` then `updateComponents` —
+ready for a validator and a renderer. `errors` is never thrown and never
+partial-and-silent: a document that does not convert says which line, and what
+was allowed there instead.
+
+`settled` is false while the document is still arriving. A partially arrived
+card can show some but not all of its buttons, so a surface that accepts
+answers must not enable controls until it is true.
+
+The component vocabulary a model is given is in
+[`docs/AUTHORING.md`](docs/AUTHORING.md); it is the same catalog the converter
+enforces.
+
+## What it does, measured
+
+Over 12 model-authored documents (`fixtures/llmdocs.json`, written one-pass by
+two models against `docs/AUTHORING.md`) and every 8-byte prefix of each:
+
+| | |
+|---|---|
+| documents that convert clean, schema-shaped, `root` first | 12 / 12 |
+| ten escape-hatch probes (expressions, `process.env`, component override, imports, unbounded loop) | 10 / 10 refused, no side effects |
+| raw prefixes that convert | 24% |
+| repaired prefixes that convert | 100% |
+| prefixes that paint something | 100%, first paint at ~1% of arrival |
+
+The last two rows are the reason both halves exist. Without the repair a
+truncated prefix is refused — correct, but it renders nothing while the answer
+is arriving. Without the converter's root-first emission, A2UI written by a
+model paints at 99% of arrival or never: models put `root` last, or misname it.
+
 ## Status
 
 Nothing here is stable. Every export carries an `experimental_` prefix, the
