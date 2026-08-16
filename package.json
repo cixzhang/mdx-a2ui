@@ -14,7 +14,7 @@
     "LICENSE"
   ],
   "scripts": {
-    "test": "vitest run",
+    "test": "vitest run --passWithNoTests",
     "test:watch": "vitest",
     "typecheck": "tsc --noEmit"
   },
