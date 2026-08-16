@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>mdx-a2ui — MDX in, A2UI out, rendered in Astryx</title>
+    <meta
+      name="description"
+      content="Watch a model write MDX, and watch it become A2UI and render in Astryx as it arrives. The JSX is parsed, never evaluated." />
+
+    <!-- The theme names a font family; it never loads one. Without this the
+         page silently falls back to the next family in the stack. -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" />
+
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/@astryxdesign/core@0.4.1/src/reset.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/@astryxdesign/core@0.4.1/dist/astryx.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/@astryxdesign/theme-neutral@0.4.1/dist/theme.css" />
+
+    <!--
+      Everything third-party is a CDN module; the only built file on this page
+      is mdx-a2ui.js, which is this repo's own src/ with its dependencies left
+      external so they resolve here.
+
+      ?external=react,react-dom makes esm.sh reuse the React below instead of
+      bundling a second copy — two Reacts means every hook throws.
+    -->
+    <script type="importmap">
+      {
+        "imports": {
+          "react": "https://esm.sh/react@19.2.0",
+          "react/jsx-runtime": "https://esm.sh/react@19.2.0/jsx-runtime",
+          "react-dom": "https://esm.sh/react-dom@19.2.0",
+          "react-dom/client": "https://esm.sh/react-dom@19.2.0/client",
+          "htm": "https://esm.sh/htm@3.1.1",
+          "@astryxdesign/core": "https://esm.sh/@astryxdesign/core@0.4.1?external=react,react-dom",
+          "@astryxdesign/theme-neutral": "https://esm.sh/@astryxdesign/theme-neutral@0.4.1?external=react,react-dom",
+          "unified": "https://esm.sh/unified@11.0.5",
+          "remark-parse": "https://esm.sh/remark-parse@11.0.0",
+          "remark-gfm": "https://esm.sh/remark-gfm@4.0.1",
+          "remark-mdx": "https://esm.sh/remark-mdx@3.1.1",
+          "mdx-a2ui": "./mdx-a2ui.js"
+        }
+      }
+    </script>
+
+    <style>
+      html,
+      body,
+      #root {
+        height: 100%;
+        margin: 0;
+      }
+      body {
+        font-family: var(--font-family-body);
+      }
+      #root:empty::after {
+        content: 'Loading Astryx from the CDN…';
+        display: block;
+        padding: 2rem;
+        color: var(--color-text-secondary);
+      }
+      /* The MDX source pane is a plain <pre>: it shows exactly the bytes the
+         model has sent, so it must not be prettified or reflowed. */
+      .mdx-source {
+        margin: 0;
+        font-family: 'JetBrains Mono', ui-monospace, monospace;
+        font-size: 12px;
+        line-height: 1.6;
+        white-space: pre-wrap;
+        word-break: break-word;
+        color: var(--color-text-secondary);
+      }
+      .mdx-source .repair {
+        color: var(--color-text-disabled);
+        background: var(--color-background-secondary);
+        border-radius: 3px;
+      }
+      .mdx-source .dropped {
+        text-decoration: line-through;
+        opacity: 0.45;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module">
+      import {boot} from './app.js';
+      boot(document.getElementById('root'));
+    </script>
+  </body>
+</html>
